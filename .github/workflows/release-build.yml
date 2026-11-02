@@ -1,0 +1,107 @@
+name: Release Build (OCLP Edition)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag Name'
+        required: true
+        default: 'v0.26.0-oclp.1'
+
+permissions:
+  contents: write
+
+jobs:
+  build-mac:
+    name: Build macOS (${{ matrix.arch }})
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.x
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build macOS Application (${{ matrix.arch }})
+        run: |
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            pnpm run build:arm64
+          else
+            pnpm run build
+          fi
+
+      - name: Prepare and rename assets
+        run: |
+          mkdir -p dist-assets
+          version=$(jq -r '.version' package.json)
+          arch="${{ matrix.arch }}"
+          
+          if [ "$arch" = "x64" ]; then
+            [ -f "build/freetube-${version}.dmg" ] && cp "build/freetube-${version}.dmg" "dist-assets/freetube-${version}-oclp-mac-x64.dmg"
+            [ -f "build/freetube-${version}-mac.zip" ] && cp "build/freetube-${version}-mac.zip" "dist-assets/freetube-${version}-oclp-mac-x64.zip"
+            [ -f "build/freetube-${version}-mac.7z" ] && cp "build/freetube-${version}-mac.7z" "dist-assets/freetube-${version}-oclp-mac-x64.7z"
+          else
+            [ -f "build/freetube-${version}-arm64.dmg" ] && cp "build/freetube-${version}-arm64.dmg" "dist-assets/freetube-${version}-oclp-mac-arm64.dmg"
+            [ -f "build/freetube-${version}-arm64-mac.zip" ] && cp "build/freetube-${version}-arm64-mac.zip" "dist-assets/freetube-${version}-oclp-mac-arm64.zip"
+            [ -f "build/freetube-${version}-arm64-mac.7z" ] && cp "build/freetube-${version}-arm64-mac.7z" "dist-assets/freetube-${version}-oclp-mac-arm64.7z"
+          fi
+          
+          ls -lh dist-assets/
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.arch }}
+          path: dist-assets/*
+
+  publish-release:
+    name: Publish GitHub Release
+    needs: build-mac
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Collect release files
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( -name "*.dmg" -o -name "*.zip" -o -name "*.7z" \) -exec cp {} release-files/ \;
+          ls -la release-files/
+
+      - name: Publish Release to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.event.inputs.tag_name || github.ref_name }}"
+          if [ -z "$TAG" ] || [ "$TAG" = "main" ]; then
+            TAG="v0.26.0-oclp.1"
+          fi
+          
+          echo "Creating or updating GitHub Release for $TAG"
+          gh release create "$TAG" release-files/* \
+            --title "FreeTube $TAG (OCLP & Legacy GPU Edition)" \
+            --notes-file RELEASE_NOTES.md \
+            --repo "${{ github.repository }}" || \
+          gh release upload "$TAG" release-files/* --clobber --repo "${{ github.repository }}"
