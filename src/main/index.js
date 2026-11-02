@@ -2,7 +2,7 @@ import {
   app, BrowserWindow, dialog, Menu, ipcMain,
   powerSaveBlocker, screen, session, shell,
   nativeTheme, net, protocol, clipboard,
-  Tray, ClipboardItem,
+  Tray
 } from 'electron'
 import path from 'path'
 import cp from 'child_process'
@@ -138,17 +138,12 @@ function runApp() {
         }
       }
 
-      const copy = async (url) => {
+      const copy = (url) => {
         if (parameters.linkText) {
-          await clipboard.write([
-            new ClipboardItem({
-              'text/plain': url,
-              'electron application/bookmark': {
-                title: parameters.linkText,
-                url,
-              },
-            })
-          ])
+          clipboard.write({
+            bookmark: parameters.linkText,
+            text: url
+          })
         } else {
           clipboard.writeText(url)
         }
@@ -228,22 +223,22 @@ function runApp() {
         {
           label: 'Copy Lin&k',
           visible: visible && !isInAppUrl,
-          click: async () => {
-            await copy(parameters.linkURL)
+          click: () => {
+            copy(parameters.linkURL)
           }
         },
         {
           label: 'Copy YouTube Link',
           visible: visible && isInAppUrl,
-          click: async () => {
-            await copy(transformURL(true))
+          click: () => {
+            copy(transformURL(true))
           }
         },
         {
           label: 'Copy Invidious Link',
           visible: visible && isInAppUrl && (backendPreference === 'invidious' || backendFallback),
-          click: async () => {
-            await copy(transformURL(false))
+          click: () => {
+            copy(transformURL(false))
           }
         },
         // Only show search in new window for
