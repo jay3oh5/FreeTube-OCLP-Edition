@@ -1,7 +1,7 @@
 {
   "name": "freetube",
   "productName": "FreeTube",
-  "description": "A private YouTube client",
+  "description": "A private YouTube client (Legacy GPU & OCLP Edition maintaining Electron 42 / Chromium <= 151)",
   "version": "0.26.0",
   "license": "AGPL-3.0-or-later",
   "main": "./dist/main.js",

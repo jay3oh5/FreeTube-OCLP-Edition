@@ -2,9 +2,75 @@
  <img alt="" src="/_icons/logoColor.svg" width=500 align="center">
 </p>
 
+# FreeTube (Legacy GPU & OCLP Edition)
+
 FreeTube is an open source desktop YouTube player built with privacy in mind.
 Use YouTube without advertisements and prevent Google from tracking you with their cookies and JavaScript.
-Available for Windows (10 and later), Mac (macOS 13 and later) & Linux thanks to Electron.
+Available for Windows (10 and later), Mac (macOS 12 and later) & Linux thanks to Electron.
+
+> [!IMPORTANT]
+> ### ⚠️ About This Fork
+> **This repository is a specialized fork of [FreeTube](https://github.com/FreeTubeApp/FreeTube)** maintained specifically for machines that lost GPU hardware acceleration in **Chromium 152+** (Electron 44+).
+> 
+> Starting in Chromium 152, the Chromium team removed the legacy OpenGL graphics backend on macOS, enforcing a strict Metal-only (Metal 3 / modern Metal) pipeline via ANGLE. On older Intel Macs running modern macOS (macOS 13 Ventura, 14 Sonoma, 15 Sequoia) via **OpenCore Legacy Patcher (OCLP)**, these older GPUs rely on root-patched drivers that lack compliant Metal 3 support. In upstream Chromium 152+, this causes the GPU process to crash or permanently fall back to unaccelerated software rendering, creating severe UI lag, frame drops, and heavy CPU usage during YouTube video playback (especially with VP9 and AV1 codecs).
+> 
+> **What this fork does:**
+> - Pins **Electron to 42.x** (running **Chromium 148 / $\le 151$**) to retain full OpenGL/ANGLE hardware acceleration, smooth video playback, and low CPU usage.
+> - Preserves compatibility for **macOS 12 Monterey** (which upstream FreeTube dropped in v0.26.0).
+> - Adapts the main-process clipboard and context-menu APIs for Electron 42 stability.
+> - Tracks and merges all upstream YouTube extraction updates (`youtubei.js`, `shaka-player`, `googlevideo`), Invidious instance fixes, SponsorBlock enhancements, and UI bug fixes.
+
+---
+
+### 🖥️ Machines & GPUs Dropped from Hardware Acceleration (Chromium 152+)
+
+This fork is designed for Mac hardware relying on OpenCore Legacy Patcher (OCLP) root patches for GPU acceleration, including:
+
+#### 1. Intel Integrated Graphics
+* **Intel HD Graphics 4000 (Ivy Bridge):**
+  * MacBook Pro (13" & 15", Mid 2012 / Late 2012 Retina / Early 2013 Retina) (`MacBookPro9,1`, `MacBookPro9,2`, `MacBookPro10,1`, `MacBookPro10,2`)
+  * MacBook Air (11" & 13", Mid 2012) (`MacBookAir5,1`, `MacBookAir5,2`)
+  * Mac mini (Late 2012) (`MacMini6,1`, `MacMini6,2`)
+  * iMac (21.5" & 27", Late 2012 / Early 2013) (`iMac13,1`, `iMac13,2`, `iMac13,3`)
+* **Intel HD Graphics 5000 / Iris 5100 / Iris Pro 5200 (Haswell):**
+  * MacBook Pro (13" & 15", Late 2013 / Mid 2014) (`MacBookPro11,1`, `MacBookPro11,2`, `MacBookPro11,3`)
+  * MacBook Air (11" & 13", Mid 2013 / Early 2014) (`MacBookAir6,1`, `MacBookAir6,2`)
+  * Mac mini (Late 2014) (`MacMini7,1`)
+  * iMac (21.5", Mid 2014) (`iMac14,4`)
+* **Intel HD Graphics 6000 / Iris 6100 / Iris Pro 6200 (Broadwell):**
+  * MacBook Pro (13", Early 2015) (`MacBookPro12,1`)
+  * MacBook Air (13", Early 2015 – 2017) (`MacBookAir7,1`, `MacBookAir7,2`)
+  * iMac (21.5" & 27", Late 2015) (`iMac16,1`, `iMac16,2`)
+  * MacBook (12", Early 2015) (`MacBook8,1`)
+* **Intel HD Graphics 515 / 530 (Skylake):**
+  * MacBook Pro (Late 2016) (`MacBookPro13,1`, `MacBookPro13,2`)
+  * MacBook (12", Early 2016) (`MacBook9,1`)
+  * iMac (Late 2015) (`iMac17,1`)
+* **Pre-Metal Intel Legacy (HD 3000 / Sandy Bridge & older):**
+  * MacBook Pro (Early / Late 2011) (`MacBookPro8,1`, `MacBookPro8,2`, `MacBookPro8,3`)
+  * MacBook Air (Mid 2011) (`MacBookAir4,1`, `MacBookAir4,2`)
+  * Mac mini (Mid 2011) (`MacMini5,1`, `MacMini5,2`)
+  * MacBook (Mid 2010) (`MacBook7,1`)
+
+#### 2. NVIDIA Dedicated Graphics
+* **NVIDIA Kepler Architecture (GeForce GT 640M, GT 650M, GTX 660M, GTX 675MX, GTX 680MX, GT 750M):**
+  * MacBook Pro (15" Retina, Mid 2012 / Early 2013 / Late 2013 / Mid 2014) (`MacBookPro10,1`, `MacBookPro11,3`)
+  * iMac (21.5" & 27", Late 2012 / Late 2013) (`iMac13,1`, `iMac13,2`, `iMac14,2`, `iMac14,3`)
+* **Pre-Metal NVIDIA (Tesla / Fermi: GeForce 9400M, 320M, 330M):**
+  * MacBook Pro (2008–2010)
+  * Mac mini & MacBook (2009–2010)
+
+#### 3. AMD / ATI Dedicated Graphics
+* **AMD GCN 1st – 3rd Gen (HD 7000 / 8000 series, R9 M290X, M370X, FirePro D300 / D500 / D700):**
+  * Mac Pro ("Trash Can", Late 2013) (`MacPro6,1`)
+  * MacBook Pro (15" Retina, Mid 2015) (`MacBookPro11,5`)
+  * iMac (Retina 5K 27", Late 2014 / Mid 2015) (`iMac15,1`)
+* **Pre-Metal TeraScale 1 & 2 (Radeon HD 2000–6000 series):**
+  * iMac (2007–2011)
+  * MacBook Pro (Late 2011 HD 6750M / HD 6770M)
+  * Mac Pro (2008–2012 with legacy ATI cards)
+
+---
 
 <p align="center"><a href="https://github.com/FreeTubeApp/FreeTube/releases">Download FreeTube</a></p>
 <p align="center">
@@ -96,7 +162,7 @@ RedirectTube, doesn’t automatically open YouTube links in FreeTube (although t
 ### Official Downloads
 
 > [!CAUTION]
-> FreeTube is only supported on Windows 10 and later, macOS 13 and above, and various Linux distributions. Installing it on unsupported systems may result in unexpected issues.
+> This fork is supported on Windows 10 and later, macOS 12 and above (including legacy Metal and non-Metal Macs running OCLP), and various Linux distributions. Upstream FreeTube v0.26.0+ dropped macOS 12 and dropped legacy OpenGL GPU acceleration in Chromium 152+.
 
 * [GitHub Releases](https://github.com/FreeTubeApp/FreeTube/releases)
 
