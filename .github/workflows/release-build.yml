@@ -16,12 +16,8 @@ permissions:
 
 jobs:
   build-mac:
-    name: Build macOS (${{ matrix.arch }})
+    name: Build macOS (x64)
     runs-on: macos-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        arch: [x64, arm64]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -39,36 +35,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: Build macOS Application (${{ matrix.arch }})
-        run: |
-          if [ "${{ matrix.arch }}" = "arm64" ]; then
-            pnpm run build:arm64
-          else
-            pnpm run build
-          fi
+      - name: Build macOS Application (x64)
+        run: pnpm run build
 
       - name: Prepare and rename assets
         run: |
           mkdir -p dist-assets
           version=$(jq -r '.version' package.json)
-          arch="${{ matrix.arch }}"
           
-          if [ "$arch" = "x64" ]; then
-            [ -f "build/freetube-${version}.dmg" ] && cp "build/freetube-${version}.dmg" "dist-assets/freetube-${version}-oclp-mac-x64.dmg"
-            [ -f "build/freetube-${version}-mac.zip" ] && cp "build/freetube-${version}-mac.zip" "dist-assets/freetube-${version}-oclp-mac-x64.zip"
-            [ -f "build/freetube-${version}-mac.7z" ] && cp "build/freetube-${version}-mac.7z" "dist-assets/freetube-${version}-oclp-mac-x64.7z"
-          else
-            [ -f "build/freetube-${version}-arm64.dmg" ] && cp "build/freetube-${version}-arm64.dmg" "dist-assets/freetube-${version}-oclp-mac-arm64.dmg"
-            [ -f "build/freetube-${version}-arm64-mac.zip" ] && cp "build/freetube-${version}-arm64-mac.zip" "dist-assets/freetube-${version}-oclp-mac-arm64.zip"
-            [ -f "build/freetube-${version}-arm64-mac.7z" ] && cp "build/freetube-${version}-arm64-mac.7z" "dist-assets/freetube-${version}-oclp-mac-arm64.7z"
-          fi
+          [ -f "build/freetube-${version}.dmg" ] && cp "build/freetube-${version}.dmg" "dist-assets/freetube-${version}-oclp-mac-x64.dmg"
+          [ -f "build/freetube-${version}-mac.zip" ] && cp "build/freetube-${version}-mac.zip" "dist-assets/freetube-${version}-oclp-mac-x64.zip"
+          [ -f "build/freetube-${version}-mac.7z" ] && cp "build/freetube-${version}-mac.7z" "dist-assets/freetube-${version}-oclp-mac-x64.7z"
           
           ls -lh dist-assets/
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: macos-${{ matrix.arch }}
+          name: macos-x64
           path: dist-assets/*
 
   publish-release:

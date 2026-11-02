@@ -75,9 +75,17 @@ This build provides hardware graphics acceleration for:
 
 ---
 
-## 📦 Installation on macOS
+## 🍏 Note for Apple Silicon (M1/M2/M3/M4) Users
 
-1. Download the `freetube-0.26.0-mac-x64.dmg` (for Intel Macs) or `freetube-0.26.0-mac-arm64.dmg` (for Apple Silicon).
+> **You do NOT need this fork.**
+> 
+> Apple Silicon Macs feature custom Apple GPUs with native, first-class **Metal** hardware architecture. They never relied on legacy OpenGL drivers or root patches, so hardware acceleration is **100% functional in official upstream FreeTube v0.26.0+**. If you are on an M-series Mac, please download the official upstream FreeTube releases. This fork is strictly built for older **Intel Macs** running OCLP.
+
+---
+
+## 📦 Installation on macOS (Intel x86_64)
+
+1. Download [`freetube-0.26.0-oclp-mac-x64.dmg`](https://github.com/jay3oh5/FreeTube-OCLP-Edition/releases/download/v0.26.0-oclp.1/freetube-0.26.0-oclp-mac-x64.dmg).
 2. Open the `.dmg` file and drag **FreeTube** to your **Applications** folder.
 3. **First launch:**
    * Because this is a custom community build with an ad-hoc signature, macOS Gatekeeper may prompt on first launch.

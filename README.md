@@ -19,6 +19,8 @@ Available for Windows (10 and later), Mac (macOS 12 and later) & Linux thanks to
 > - Preserves compatibility for **macOS 12 Monterey** (which upstream FreeTube dropped in v0.26.0).
 > - Adapts the main-process clipboard and context-menu APIs for Electron 42 stability.
 > - Tracks and merges all upstream YouTube extraction updates (`youtubei.js`, `shaka-player`, `googlevideo`), Invidious instance fixes, SponsorBlock enhancements, and UI bug fixes.
+>
+> 🍏 **Note for Apple Silicon (M1/M2/M3/M4) Users:** You do **not** need this fork. Apple Silicon features native Metal architecture and never lost hardware acceleration in Chromium 152+. Please download the official upstream FreeTube releases.
 
 ---
 
