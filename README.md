@@ -4,21 +4,27 @@
 
 # FreeTube (OCLP & Legacy GPU Edition)
 
-An open-source desktop YouTube player for older Macs and legacy systems, built with privacy in mind.
+An open-source desktop YouTube player for older Macs and legacy hardware, built with privacy in mind.
 
 > [!IMPORTANT]
 > ### ⚠️ About This Fork
 > **This repository is an independent community fork of the official [FreeTube Project](https://github.com/FreeTubeApp/FreeTube).**
 >
-> It is maintained specifically for older computers that lost GPU hardware acceleration in **Chromium 152+** (Electron 44+), particularly older Intel Macs running modern macOS (macOS 13 Ventura, 14 Sonoma, 15 Sequoia) using **OpenCore Legacy Patcher (OCLP)**.
+> It is maintained specifically for older systems that lost GPU hardware acceleration in **Chromium 152+** (Electron 44+), particularly older Intel Macs running modern macOS (macOS 13 Ventura, 14 Sonoma, 15 Sequoia) via **OpenCore Legacy Patcher (OCLP)**.
 >
 > **What this fork does:**
-> - **Restores Full GPU Hardware Acceleration:** Pins the runtime to **Electron 42.11.18 (Chromium 148 / $\le 151$)**, which retains the legacy OpenGL/ANGLE graphics layer. Video decoding and window rendering stay GPU-accelerated rather than spiking your CPU to 100%.
-> - **Preserves macOS 12 Monterey Support:** Upstream FreeTube v0.26.0 dropped macOS 12; this fork continues to run on macOS 12 and above.
-> - **Keeps Up-to-Date with Upstream:** Merges all official FreeTube bug fixes, player enhancements (`shaka-player`), YouTube extractor updates (`youtubei.js`, `googlevideo`), Invidious fixes, and SponsorBlock improvements.
+> - **Restores GPU Hardware Acceleration:** Pins runtime to **Electron 42.11.18 (Chromium 148 / $\le 151$)**, preserving OpenGL/ANGLE GPU rendering and preventing 100% CPU spikes during video playback.
+> - **Preserves macOS 12 Monterey Support:** Retains compatibility for macOS 12 and above (which upstream dropped in v0.26.0).
+> - **Syncs Upstream Improvements:** Merges all upstream FreeTube bug fixes, player enhancements (`shaka-player`), YouTube extractor updates (`youtubei.js`, `googlevideo`), Invidious fixes, and SponsorBlock improvements.
 > - **Maintains Stability:** Retains Electron 42-compatible main-process clipboard and context menu APIs.
 >
 > 🍏 **Note for Apple Silicon (M1/M2/M3/M4) Users:** You do **not** need this fork. Apple Silicon Macs feature native Metal architecture and never lost hardware acceleration. Please use the [Official Upstream FreeTube Releases](https://github.com/FreeTubeApp/FreeTube/releases).
+
+> [!NOTE]
+> ### ☕ Hobby & Maintenance Notice
+> This fork is a personal hobby project created primarily for personal use and maintained in spare time.
+>
+> **Please do not expect timely or regular updates.** Upstream syncing and maintenance may occur sporadically, or it might not happen at all. Anyone is completely welcome and encouraged to fork this repository, submit PRs, or adapt it for their own needs under the AGPLv3 license!
 
 ---
 
@@ -30,11 +36,35 @@ An open-source desktop YouTube player for older Macs and legacy systems, built w
 
 ---
 
+## 📦 Download & Installation (macOS Intel)
+
+1. Head to the [**Releases Page**](https://github.com/jay3oh5/FreeTube-OCLP-Edition/releases) and download `freetube-*-oclp-mac-x64.dmg`.
+2. Open the `.dmg` and drag **FreeTube** to your **Applications** folder.
+
+<details>
+<summary><b>🛡️ First Launch / macOS Gatekeeper Help</b></summary>
+
+<br>
+
+Because this is an independent community build with an ad-hoc signature, macOS Gatekeeper may prompt on first launch:
+* **Option A:** Right-click (or Control-click) **FreeTube.app** in `/Applications`, select **Open**, and click **Open** in the dialog.
+* **Option B:** Run this command in Terminal:
+  ```bash
+  xattr -cr /Applications/FreeTube.app
+  ```
+
+</details>
+
+---
+
 ## 🖥️ Supported Legacy Hardware & Dropped GPUs
 
-Starting in Chromium 152, Google permanently removed the legacy OpenGL backend on macOS, enforcing a strict Metal-only pipeline via ANGLE. Because legacy GPU drivers patched via OpenCore Legacy Patcher (OCLP) lack compliant Metal 3 support, newer Chromium/Electron builds crash the GPU process or fall back to unaccelerated software rendering.
+In Chromium 152+, Google removed the legacy OpenGL backend on macOS, mandating a strict Metal-only pipeline via ANGLE. Because legacy GPU drivers patched via OpenCore Legacy Patcher (OCLP) lack compliant Metal 3 support, newer Chromium/Electron builds crash the GPU process or fall back to unaccelerated software rendering.
 
-This fork restores GPU hardware acceleration for the following machines:
+<details>
+<summary><b>📋 Click to expand full list of supported Mac models & GPUs</b></summary>
+
+<br>
 
 ### 1. Intel Integrated Graphics
 * **Intel HD Graphics 4000 (Ivy Bridge):**
@@ -74,24 +104,16 @@ This fork restores GPU hardware acceleration for the following machines:
 * **Pre-Metal TeraScale 1 & 2 (Radeon HD 2000–6000 series):**
   * iMac (2007–2011), MacBook Pro (Late 2011), Mac Pro (2008–2012)
 
----
-
-## 📦 Downloads & Installation (macOS Intel)
-
-1. Go to the [**Releases Page**](https://github.com/jay3oh5/FreeTube-OCLP-Edition/releases).
-2. Download the latest `freetube-*-oclp-mac-x64.dmg` installer.
-3. Open the downloaded `.dmg` and drag **FreeTube** to your **Applications** folder.
-4. **First Launch (Gatekeeper):**
-   Because this is an independent community build with an ad-hoc signature, macOS Gatekeeper may show an alert on first launch.
-   * Right-click (or Control-click) **FreeTube.app** in `/Applications` and select **Open**, then click **Open** in the dialog.
-   * Alternatively, run this single command in Terminal:
-     ```bash
-     xattr -cr /Applications/FreeTube.app
-     ```
+</details>
 
 ---
 
-## ✨ Features
+## ✨ Features & Browser Extensions
+
+<details>
+<summary><b>✨ View FreeTube Core Features</b></summary>
+
+<br>
 
 * **Ad-Free Video Playback:** Watch YouTube without commercial interruptions.
 * **Privacy First:** YouTube can see video requests, but cannot track you across videos using cookies or user JavaScript.
@@ -101,13 +123,18 @@ This fork restores GPU hardware acceleration for the following machines:
 * **External Players:** Play videos through MPV, VLC, or other media players if desired.
 * **Distraction-Free Mode:** Hide comments, recommended videos, live chats, or trending tabs to maintain focus.
 
----
+</details>
 
-## 🔗 Browser Extensions (Open Videos in FreeTube)
+<details>
+<summary><b>🔗 Browser Extensions (Open Videos directly in FreeTube)</b></summary>
 
-You can automatically redirect YouTube links from your web browser into FreeTube using third-party browser extensions:
+<br>
+
+Automatically redirect YouTube links from your browser into FreeTube:
 * **[LibRedirect](https://libredirect.manerakai.com/):** Redirects YouTube links directly to FreeTube (select *FreeTube* as Frontend in the extension's Services settings). Available for [Firefox](https://addons.mozilla.org/firefox/addon/libredirect/) and [Chromium browsers](https://libredirect.manerakai.com/download_chromium.html).
 * **[RedirectTube](https://github.com/MStankiewiczOfficial/RedirectTube):** Adds toolbar and context-menu buttons to open YouTube links in FreeTube. Available for [Firefox](https://addons.mozilla.org/firefox/addon/redirecttube/) and [Chrome Web Store](https://chromewebstore.google.com/detail/redirecttube/jpbaggklodpddjcadlebabhiopjkjfjh).
+
+</details>
 
 ---
 
